@@ -1,0 +1,379 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package view;
+import dao.BarangDAO;
+import model.Barang;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author User
+ */
+public class FormBarang extends javax.swing.JFrame {
+
+    /**
+     * Creates new form FormBarang
+     */
+    public FormBarang() {
+    initComponents();
+
+    tampilkanData();
+
+    btnSimpan.addActionListener(e -> simpanData());
+    btnUbah.addActionListener(e -> ubahData());
+    btnHapus.addActionListener(e -> hapusData());
+    btnBersihkan.addActionListener(e -> bersihkan());
+
+    tblBarang.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            pilihData();
+        }
+    });
+
+    }
+    
+// Menampilkan data ke tabel
+private void tampilkanData() {
+    DefaultTableModel model =
+        (DefaultTableModel) tblBarang.getModel();
+
+    model.setRowCount(0);
+
+    BarangDAO dao = new BarangDAO();
+
+    for (Barang b : dao.tampilkan()) {
+        model.addRow(new Object[]{
+            b.getKodeBarang(),
+            b.getNamaBarang(),
+            b.getKategori(),
+            b.getStok()
+        });
+    }
+}
+
+// Memeriksa input
+private boolean validasi() {
+    if (txtKode.getText().trim().isEmpty()
+            || txtNama.getText().trim().isEmpty()
+            || txtStok.getText().trim().isEmpty()) {
+
+        JOptionPane.showMessageDialog(this,
+            "Semua data harus diisi!");
+        return false;
+    }
+
+    try {
+        int stok = Integer.parseInt(txtStok.getText());
+
+        if (stok < 0) {
+            JOptionPane.showMessageDialog(this,
+                "Stok tidak boleh kurang dari 0!");
+            return false;
+        }
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this,
+            "Stok harus berupa angka!");
+        return false;
+    }
+
+    return true;
+}
+
+// Tombol Simpan
+private void simpanData() {
+    if (!validasi()) return;
+
+    Barang b = new Barang(
+        txtKode.getText().trim(),
+        txtNama.getText().trim(),
+        cmbKategori.getSelectedItem().toString(),
+        Integer.parseInt(txtStok.getText().trim())
+    );
+
+    if (new BarangDAO().simpan(b)) {
+        JOptionPane.showMessageDialog(this,
+            "Data barang berhasil disimpan!");
+        bersihkan();
+        tampilkanData();
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "Gagal menyimpan data barang!");
+    }
+}
+
+// Mengambil data dari tabel
+private void pilihData() {
+    int baris = tblBarang.getSelectedRow();
+
+    if (baris != -1) {
+        txtKode.setText(
+            tblBarang.getValueAt(baris, 0).toString());
+        txtNama.setText(
+            tblBarang.getValueAt(baris, 1).toString());
+        cmbKategori.setSelectedItem(
+            tblBarang.getValueAt(baris, 2).toString());
+        txtStok.setText(
+            tblBarang.getValueAt(baris, 3).toString());
+
+        txtKode.setEditable(false);
+    }
+}
+
+// Tombol Ubah
+private void ubahData() {
+    if (!validasi()) return;
+
+    Barang b = new Barang(
+        txtKode.getText().trim(),
+        txtNama.getText().trim(),
+        cmbKategori.getSelectedItem().toString(),
+        Integer.parseInt(txtStok.getText().trim())
+    );
+
+    if (new BarangDAO().ubah(b)) {
+        JOptionPane.showMessageDialog(this,
+            "Data barang berhasil diubah!");
+        bersihkan();
+        tampilkanData();
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "Gagal mengubah data!");
+    }
+}
+
+// Tombol Hapus
+private void hapusData() {
+    String kode = txtKode.getText().trim();
+
+    if (kode.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+            "Pilih data yang ingin dihapus!");
+        return;
+    }
+
+    int konfirmasi = JOptionPane.showConfirmDialog(
+        this,
+        "Yakin ingin menghapus data ini?",
+        "Konfirmasi Hapus",
+        JOptionPane.YES_NO_OPTION
+    );
+
+    if (konfirmasi == JOptionPane.YES_OPTION) {
+        if (new BarangDAO().hapus(kode)) {
+            JOptionPane.showMessageDialog(this,
+                "Data berhasil dihapus!");
+            bersihkan();
+            tampilkanData();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Gagal menghapus data!");
+        }
+    }
+}
+
+// Membersihkan form
+private void bersihkan() {
+    txtKode.setText("");
+    txtNama.setText("");
+    txtStok.setText("");
+    cmbKategori.setSelectedIndex(0);
+    txtKode.setEditable(true);
+    tblBarang.clearSelection();
+}
+
+    
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        lblKode = new javax.swing.JLabel();
+        txtKode = new javax.swing.JTextField();
+        lblNama = new javax.swing.JLabel();
+        txtNama = new javax.swing.JTextField();
+        lblKategori = new javax.swing.JLabel();
+        cmbKategori = new javax.swing.JComboBox<>();
+        lblStok = new javax.swing.JLabel();
+        txtStok = new javax.swing.JTextField();
+        btnSimpan = new javax.swing.JButton();
+        btnUbah = new javax.swing.JButton();
+        btnHapus = new javax.swing.JButton();
+        btnBersihkan = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBarang = new javax.swing.JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
+        jLabel1.setText("DATA BARANG LABORATORIUM");
+
+        lblKode.setText("Kode Barang");
+
+        lblNama.setText("Nama Barang");
+
+        lblKategori.setText("Kategori");
+
+        cmbKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Komputer", "Jaringan", "Alat Ukur", " " }));
+
+        lblStok.setText("Stok");
+
+        btnSimpan.setText("Simpan");
+
+        btnUbah.setText("Ubah");
+
+        btnHapus.setText("Hapus");
+
+        btnBersihkan.setText("Bersihkan");
+
+        tblBarang.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Kode", "Nama Barang", "Katagori", "Stok"
+            }
+        ));
+        jScrollPane1.setViewportView(tblBarang);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblKode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblKategori, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblNama, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE))
+                            .addComponent(lblStok, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(49, 49, 49)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtKode)
+                            .addComponent(txtNama)
+                            .addComponent(cmbKategori, 0, 229, Short.MAX_VALUE)
+                            .addComponent(txtStok)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(82, 82, 82)
+                        .addComponent(btnSimpan)
+                        .addGap(76, 76, 76)
+                        .addComponent(btnUbah)
+                        .addGap(50, 50, 50)
+                        .addComponent(btnHapus)
+                        .addGap(58, 58, 58)
+                        .addComponent(btnBersihkan)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(25, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(191, 191, 191))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblKode)
+                    .addComponent(txtKode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNama)
+                    .addComponent(txtNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblKategori)
+                    .addComponent(cmbKategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblStok)
+                    .addComponent(txtStok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(41, 41, 41)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSimpan)
+                    .addComponent(btnUbah)
+                    .addComponent(btnHapus)
+                    .addComponent(btnBersihkan))
+                .addGap(74, 74, 74)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(142, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FormBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FormBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FormBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FormBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new FormBarang().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBersihkan;
+    private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnSimpan;
+    private javax.swing.JButton btnUbah;
+    private javax.swing.JComboBox<String> cmbKategori;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblKategori;
+    private javax.swing.JLabel lblKode;
+    private javax.swing.JLabel lblNama;
+    private javax.swing.JLabel lblStok;
+    private javax.swing.JTable tblBarang;
+    private javax.swing.JTextField txtKode;
+    private javax.swing.JTextField txtNama;
+    private javax.swing.JTextField txtStok;
+    // End of variables declaration//GEN-END:variables
+}
